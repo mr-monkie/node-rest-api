@@ -1,0 +1,25 @@
+{
+  "name": "learn-node",
+  "version": "1.0.0",
+  "description": "testing",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/boontat/node-rest-api.git"
+  },
+  "keywords": [
+    "test"
+  ],
+  "author": "Rudi, Puah",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/boontat/node-rest-api/issues"
+  },
+  "homepage": "https://github.com/boontat/node-rest-api#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
