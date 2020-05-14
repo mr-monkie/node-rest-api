@@ -13,8 +13,16 @@ const init = async () => {
         method: 'GET',
         path: '/',
         handler: (request, h) => {
-
             return 'Hello World!';
+        }
+    });
+
+    server.route({
+        method: 'POST',
+        path: '/part-1',
+        handler: function (request, h) {
+            const payload = request.payload;
+            return `Welcome ${payload.username}!`;
         }
     });
 
