@@ -22,6 +22,44 @@ let findEmployee = (id) => {
   });
 }
 
+let addEmployee = (employee) => {
+  employeeData.push(employee)
+}
+
+let findAndReplace = (employee) => {
+  let employeeFound = findEmployee(employee._id);
+  if (employeeFound) {
+    for (let key in employee) {
+      employeeFound[key] = employee[key];
+    }
+    return true;
+  } else {
+    return false;
+  }
+}
+
+let deleteEmployee = (id) => {
+  let length = employeeData.length;
+  while (length--) {
+    if (employeeData[length] && employeeData[length]['_id'] === id) {
+      employeeData.splice(length,1);
+      return true;
+    }
+  }
+
+  return false;
+}
+
+const getRequestBodyAndGenerateResponse = (req, res, callback) => {
+  let body = '';
+  req.on('data', chunk => {
+    body += chunk.toString();
+  });
+  req.on('end', () => {
+    callback(res, JSON.parse(body));
+  });
+}
+
 const getMethodHandler = (url, req, res) => {
   const employeeId = url.substring(1);
   const employee = findEmployee(employeeId);
@@ -30,13 +68,39 @@ const getMethodHandler = (url, req, res) => {
     res.end(`The employee with id ${employeeId} is not present.`);
     return;
   }
-
   res.writeHead(200);
   res.end(JSON.stringify(employee));
 }
 
+const putMethodHandler = (res, body) => {
+  let resBody = body;
+  findAndReplace(reqBody);
+  res.writeHead(200);
+  res.end(`The Employee object with id is ${resBody._id} replaced.`);
+}
+
+const postMethodHandler = (res, body) => {
+  try {
+    let resBody = body;
+    addEmployee(reqBody);
+    res.writeHead(200);
+    res.end(`The Employee object with id is ${reqBody._id} added.`);
+  } catch (error) {
+    res.writeHead(400);
+    res.end(error.message);
+  }
+}
+
+const deleteMethodHandler = (url, req, res) => {
+  const employeeId = url.substring(1);
+  const response = deleteEmployee(employeeId);
+  res.writeHead(200);
+  res.end(`The employee with id ${employeeId} is deleted.`);
+}
+
 const requestListener = function (req, res) {
   try {
+    res.setHeader('Content-Type', 'application/json');
     entryCheck(req);
     const methodType = req.method.toUpperCase();
     const url = req.url;
@@ -45,15 +109,14 @@ const requestListener = function (req, res) {
         getMethodHandler(url, req, res);
         break;
       case 'POST':
-
+        getRequestBodyAndGenerateResponse(req, res, postMethodHandler);
         break;
       case 'PUT':
-
+        getRequestBodyAndGenerateResponse(req, res, putMethodHandler);
         break;
       case 'DELETE':
-
+        deleteMethodHandler(url, req, res);
         break;
-
       default:
         break;
     }
@@ -67,6 +130,7 @@ const ACCEPT_ENCODING_1 = 'application/json';
 const ACCEPT_ENCODING_2 = '*/*';
 
 const entryCheck = function (req) {
+  console.log(req.headers);
   const contentType = req.headers['content-type'];
   if (!contentType.includes(REQUIRED_CONTENT_TYPE)) {
     throw new Error("Sorry we only support content type as json format.");
