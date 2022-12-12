@@ -21,6 +21,6 @@
   "homepage": "https://github.com/boontat/node-rest-api#readme",
   "dependencies": {
     "@hapi/hapi": "^19.1.1",
-    "express": "^4.17.1"
+    "express": "^4.17.3"
   }
 }
